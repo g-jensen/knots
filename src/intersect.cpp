@@ -60,21 +60,26 @@ void updateIntersections(std::vector<sf::VertexArray>& path, sf::VertexArray* pr
   if (path.empty())
     return;
   sf::VertexArray* lastLine = &path.back();
+  sf::VertexArray* lastLastLine = nullptr;
+  bool endsConnected = false;
+  if (path.size() >= 2) {
+    lastLastLine = lastLine - 1;
+    endsConnected = ((*lastLine)[0].position == (*lastLastLine)[1].position) && 
+                    ((*lastLine)[1].position == path.front()[0].position);
+  }
+
   for (auto& line: path) {
-    if (&line == lastLine || alreadyCrossed(line,*lastLine)) {
+    if (&line == lastLine || alreadyCrossed(line,*lastLine))
       continue;
-    }
-    if (path.size() >= 2) {
-      sf::VertexArray* lastLastLine = lastLine - 1;
-      if (&line == lastLastLine) {
-        continue;
-      }
+    if (lastLastLine != nullptr && &line == lastLastLine)
+      continue;
+    if (endsConnected && (&line == &path[0] || &line == &path[1])) {
+      continue;
     }
     if (doIntersect(line,*lastLine)) {
       previousCross[0] = &line;
       previousCross[1] = lastLine;
       crossLines(*lastLine,line);
-      return;
     }
   }
 }

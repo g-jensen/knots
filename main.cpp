@@ -23,8 +23,10 @@ int main() {
       if (event.type == sf::Event::Closed)
         window.close();
       if (event.type == sf::Event::MouseButtonPressed) {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
           connectEnds(path);
+          updateIntersections(path,previousCross);
+        }
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
           resetPath(path,lastPosition,previousCross);
       }
